@@ -28,9 +28,10 @@ export default function Navbar() {
   const navLinks = [
     { href: "/request", label: " Request Help" },
     { href: "/offer", label: " Offer Help" },
-    {href: "/resources", label: "Available Resources"},
+    { href: "/resources", label: "Available Resources" },
     { href: "/volunteer", label: " Join Volunteers" },
     { href: "/requests", label: " Live Requests" },
+    { href: "/map", label: " Emergency Map" },
     { href: "/dashboard", label: " Dashboard" },
   ];
 
@@ -43,7 +44,7 @@ export default function Navbar() {
           href="/"
           className="font-bold text-2xl text-red-600 tracking-tight"
         >
-           ResQ-Now
+          ResQ-Now
         </Link>
 
         {/* Desktop Navigation */}

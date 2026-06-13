@@ -25,6 +25,7 @@ Connecting citizens, volunteers, NGOs, hospitals, and donors during emergencies 
 | Feature | Description |
 |---|---|
 |  **Emergency Requests** | Real-time posting and tracking of emergency requests |
+|  **Location-Based Tracking** |	Map-integrated resource and volunteer tracking  |
 |  **Volunteer & NGO Coordination** | Structured system for volunteers and organizations to coordinate |
 |  **Resource & Blood Requests** | Dedicated blood donation and resource request system |
 |  **Authentication** | Secure user authentication powered by Supabase Auth |
