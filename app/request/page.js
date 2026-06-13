@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Droplets,
@@ -9,6 +10,7 @@ import {
   Home,
   AlertTriangle,
   ShieldCheck,
+  CheckCircle2,
 } from "lucide-react";
 
 import BloodForm from "@/components/request-forms/BloodForm";
@@ -19,6 +21,12 @@ import ShelterForm from "@/components/request-forms/ShelterForm";
 
 export default function RequestPage() {
   const [category, setCategory] = useState("");
+  const router = useRouter();
+
+const [success, setSuccess] = useState(false);
+const handleSuccess = () => {
+  setSuccess(true);
+};
 
   const categories = [
     {
@@ -61,7 +69,57 @@ export default function RequestPage() {
   const selectedCategory = categories.find(
     (c) => c.id === category
   );
+  if (success) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-white px-6">
+      <div className="max-w-lg w-full bg-white rounded-3xl shadow-2xl p-10 text-center">
 
+        <div className="flex justify-center mb-6">
+          <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center animate-pulse">
+            <CheckCircle2
+              size={60}
+              className="text-green-600"
+            />
+          </div>
+        </div>
+
+        <h1 className="text-3xl font-bold text-gray-900 mb-3">
+          Request Submitted Successfully
+        </h1>
+
+        <p className="text-gray-600 mb-8">
+          Nearby volunteers and responders have been
+          notified. Your request is now being reviewed.
+        </p>
+
+        <div className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-8">
+          <p className="text-green-700 font-medium">
+            ✓ Emergency request received
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold"
+          >
+            Go To Dashboard
+          </button>
+
+          <button
+            onClick={() => {
+              setSuccess(false);
+              setCategory("");
+            }}
+            className="flex-1 border border-gray-300 py-3 rounded-xl font-semibold hover:bg-gray-50"
+          >
+            New Request
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 via-white to-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -194,15 +252,31 @@ export default function RequestPage() {
             </div>
 
             {/* Form Container */}
-            <div className="px-8 pb-10">
-              <div className="bg-gray-50 rounded-3xl border p-6 md:p-8">
-                {category === "blood" && <BloodForm />}
-                {category === "food" && <FoodForm />}
-                {category === "medicine" && <MedicineForm />}
-                {category === "transport" && <TransportForm />}
-                {category === "shelter" && <ShelterForm />}
-              </div>
+            {/* Form Container */}
+<div className="px-8 pb-10">
+  <div className="bg-gray-50 rounded-3xl border p-6 md:p-8">
+  {category === "blood" && (
+    <BloodForm onSuccess={handleSuccess} />
+  )}
+
+  {category === "food" && (
+    <FoodForm onSuccess={handleSuccess} />
+  )}
+
+  {category === "medicine" && (
+    <MedicineForm onSuccess={handleSuccess} />
+  )}
+
+  {category === "transport" && (
+    <TransportForm onSuccess={handleSuccess} />
+  )}
+
+  {category === "shelter" && (
+    <ShelterForm onSuccess={handleSuccess} />
+  )}
+</div>
             </div>
+
           </div>
         )}
       </div>

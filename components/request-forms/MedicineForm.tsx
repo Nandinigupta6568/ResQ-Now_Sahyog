@@ -4,7 +4,13 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { getAddressFromCoordinates } from "@/lib/geocode";
 
-export default function MedicineForm() {
+interface MedicineFormProps {
+  onSuccess?: () => void;
+}
+
+export default function MedicineForm({
+  onSuccess,
+}: MedicineFormProps) {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -148,11 +154,6 @@ ${form.description}`;
         }
       }
 
-      alert(
-        isSOS
-          ? " SOS Medicine Request submitted! All registered volunteers have been notified by email."
-          : " Medicine Request submitted successfully!"
-      );
 
       setForm({
         name: "",
@@ -168,6 +169,16 @@ ${form.description}`;
       setLatitude(null);
       setLongitude(null);
       setIsSOS(false);
+      if (onSuccess) {
+  onSuccess();
+  return;
+}
+
+alert(
+  isSOS
+    ? "SOS Medicine Request submitted successfully."
+    : "Medicine Request submitted successfully."
+);
     } catch (error: any) {
       console.error(error);
       alert(error.message || "Something went wrong");

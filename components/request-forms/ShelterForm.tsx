@@ -4,7 +4,13 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { getAddressFromCoordinates } from "@/lib/geocode";
 
-export default function ShelterForm() {
+interface ShelterFormProps {
+  onSuccess?: () => void;
+}
+
+export default function ShelterForm({
+  onSuccess,
+}: ShelterFormProps) {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -172,6 +178,10 @@ ${form.description}`;
       setLatitude(null);
       setLongitude(null);
       setIsSOS(false);
+      if (onSuccess) {
+  onSuccess();
+  return;
+}
     } catch (error: any) {
       console.error(error);
       alert(error.message || "Something went wrong");

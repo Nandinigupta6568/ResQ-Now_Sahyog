@@ -4,7 +4,13 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { getAddressFromCoordinates } from "@/lib/geocode";
 
-export default function BloodRequestPage() {
+interface BloodRequestPageProps {
+  onSuccess?: () => void;
+}
+
+export default function BloodRequestPage({
+  onSuccess,
+}: BloodRequestPageProps) {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -151,13 +157,18 @@ ${form.description}`;
         }
       }
 
-      alert(
-        isSOS
-          ? " SOS Blood Request submitted! All registered volunteers have been notified by email."
-          : " Blood Request submitted successfully!"
-      );
+      if (onSuccess) {
+  onSuccess();
+  return;
+}
 
-      setForm({
+alert(
+  isSOS
+    ? "SOS Blood Request submitted! All registered volunteers have been notified."
+    : "Blood Request submitted successfully!"
+);
+
+setForm({
         name: "",
         phone: "",
         blood_group: "",

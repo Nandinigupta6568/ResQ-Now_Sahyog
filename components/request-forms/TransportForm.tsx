@@ -4,7 +4,13 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { getAddressFromCoordinates } from "@/lib/geocode";
 
-export default function TransportForm() {
+interface TransportFormProps {
+  onSuccess?: () => void;
+}
+
+export default function TransportForm({
+  onSuccess,
+}: TransportFormProps) {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [pickupMode, setPickupMode] = useState<"manual" | "gps" | "">("");
@@ -181,6 +187,10 @@ ${form.description}`;
       setLongitude(null);
       setPickupMode("");
       setIsSOS(false);
+      if (onSuccess) {
+  onSuccess();
+  return;
+}
     } catch (error: any) {
       console.error("FULL ERROR:", error);
       alert(error.message || "Something went wrong");

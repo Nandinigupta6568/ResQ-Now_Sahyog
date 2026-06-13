@@ -3,8 +3,13 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { getAddressFromCoordinates } from "@/lib/geocode";
+interface FoodFormProps {
+  onSuccess?: () => void;
+}
 
-export default function FoodRequestPage() {
+export default function FoodForm({
+  onSuccess,
+}: FoodFormProps) {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -127,7 +132,7 @@ ${form.description}`;
         .select()
         .single();
 
-      if (error) throw error;
+      
 
       // ── SOS BLAST: email all volunteers immediately ──
       if (isSOS && inserted) {
@@ -148,11 +153,13 @@ ${form.description}`;
         }
       }
 
-      alert(
-        isSOS
-          ? " SOS Food Request submitted! All registered volunteers have been notified by email."
-          : " Food Request submitted successfully!"
-      );
+     if (!onSuccess) {
+  alert(
+    isSOS
+      ? "SOS Food Request submitted successfully."
+      : "Food Request submitted successfully."
+  );
+}
 
       setForm({
         name: "",
@@ -168,6 +175,12 @@ ${form.description}`;
       setLatitude(null);
       setLongitude(null);
       setIsSOS(false);
+     
+
+if (onSuccess) {
+  onSuccess();
+  return;
+}
     } catch (error: any) {
       console.error(error);
       alert(error.message || "Something went wrong");
