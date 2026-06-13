@@ -251,14 +251,20 @@ The platform includes a dedicated Admin Portal for managing the entire emergency
 
 # Recent Updates
 
-* Added secure Admin Dashboard
+
 * Integrated GPS-based location capture in emergency offer forms
-* Added interactive map with *🟢 Green markers for Offers* and *🔴 Red markers for Requests*
-* Implemented search and sorting to quickly find specific emergency requests
-* Improved authentication system
-* Enhanced homepage footer with quick navigation links
-* Improved user experience and accessibility
+* Added interactive emergency map with 🟢 green markers for offers and 🔴 red markers for requests
+* Implemented search and sorting for quick access to emergency requests
+* Redesigned the Navigation Bar for a cleaner and more user-friendly experience
+* Enhanced the Login and Sign Up pages with an improved modern UI
+* Improved authentication and access control
+* Improved overall user experience and accessibility
 * Updated README documentation
 
 ---
 
+## For modified UI 
+# Install Dependencies
+
+1. npm install --save-dev @types/react @types/react-dom or npm react-dom
+2. npm install lucide-react

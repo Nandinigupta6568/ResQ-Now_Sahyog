@@ -1,145 +1,208 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { Menu, X, LogOut } from "lucide-react";
 
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
+  const pathname = usePathname();
+  const router = useRouter();
+
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [fullName, setFullName] = useState("");
 
   useEffect(() => {
-    getUser();
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setUser(user);
+
+      if (user) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("id", user.id)
+          .single();
+
+        setFullName(data?.full_name || "");
+      }
+    };
+
+    fetchUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("id", session.user.id)
+          .single();
+
+        setFullName(data?.full_name || "");
+      } else {
+        setFullName("");
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
-
-  async function getUser() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  console.log(user);
-
-  setUser(user);
-}
 
   async function handleLogout() {
     await supabase.auth.signOut();
-    window.location.href = "/";
+
+    setUser(null);
+    setFullName("");
+    setMenuOpen(false);
+
+    router.push("/");
+    router.refresh();
   }
 
   const navLinks = [
-    { href: "/request", label: " Request Help" },
-    { href: "/offer", label: " Offer Help" },
-    {href: "/resources", label: "Available Resources"},
-    { href: "/volunteer", label: " Join Volunteers" },
-    { href: "/requests", label: " Live Requests" },
-    { href: "/map", label: " Emergency Map" },
-    { href: "/directory", label: " Contacts" },
-    { href: "/dashboard", label: " Dashboard" },
-     { href: "/my-requests", label: " My Requests" },
+    { href: "/", label: "Home" },
+    { href: "/request", label: "Request Help" },
+    { href: "/offer", label: "Offer Help" },
+    { href: "/resources", label: "Resources" },
+    { href: "/volunteer", label: "Volunteers" },
+    { href: "/requests", label: "Live Requests" },
+    { href: "/map", label: "Map" },
+    { href: "/directory", label: "Contacts" },
   ];
 
-  return (
-    <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
-      <div className="max-w-[1600px] mx-auto px-4 py-3 flex justify-between items-center">
+  const avatarLetter = (
+    fullName?.charAt(0) ||
+    user?.email?.charAt(0) ||
+    "U"
+  ).toUpperCase();
 
+  return (
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className="font-bold text-2xl text-red-600 tracking-tight"
-        >
-           ResQ-Now
+        <Link href="/" className="flex items-center">
+          <h1 className="text-xl font-bold text-red-600">
+            ResQ-Now
+          </h1>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden xl:flex items-center gap-2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm whitespace-nowrap text-gray-700 hover:text-red-600 hover:bg-red-50 px-2.5 py-2 rounded-lg transition"
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="hidden lg:flex items-center gap-2">
+          {navLinks.map((link) => {
+            const active = pathname === link.href;
+
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`px-4 py-2 rounded-xl transition-all duration-200 ${
+                  active
+                    ? "bg-red-600 text-white shadow-md"
+                    : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Right Side */}
-        <div className="flex items-center gap-3">
-
+        {/* Desktop Right */}
+        <div className="hidden lg:flex items-center gap-3">
           {user ? (
-  <>
+            <>
+              <Link
+                href="/my-requests"
+                className={`px-3 py-2 rounded-lg ${
+                  pathname === "/my-requests"
+                    ? "bg-red-600 text-white"
+                    : "hover:bg-red-50"
+                }`}
+              >
+                My Requests
+              </Link>
 
-   {user?.email === "admin@gmail.com" && (
-  <Link
-    href="/admin"
-    className="text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg transition"
-  >
-    Admin Dashboard
-  </Link>
-)}
+              {user?.email === "admin@gmail.com" && (
+                <Link
+                  href="/admin"
+                  className={`px-3 py-2 rounded-lg ${
+                    pathname.startsWith("/admin")
+                      ? "bg-red-600 text-white"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  Admin
+                </Link>
+              )}
 
-    <span>
-      {user.email}
-    </span>
-              <span className="hidden md:block text-sm text-gray-500 max-w-[180px] truncate">
-                {user.name}
-              </span>
-
-              <Link href="/profile">
-                <button className="hidden md:block px-4 py-2 border rounded-lg hover:bg-gray-50 transition">
-                  👤 Profile
-                </button>
+              {/* Professional Avatar */}
+              <Link
+                href="/dashboard"
+                title={fullName || user.email}
+                className="group"
+              >
+                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-red-500 to-red-700 text-white flex items-center justify-center font-bold text-sm border-2 border-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                  {avatarLetter}
+                </div>
               </Link>
 
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
               >
+                <LogOut size={18} />
                 Logout
               </button>
             </>
           ) : (
-            <div className="hidden md:flex gap-2">
+            <>
               <Link
                 href="/login"
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50 transition"
+                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
               >
                 Login
               </Link>
 
               <Link
                 href="/signup"
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
               >
                 Sign Up
               </Link>
-            </div>
+            </>
           )}
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
-          >
-            <div className="w-5 h-0.5 bg-black mb-1"></div>
-            <div className="w-5 h-0.5 bg-black mb-1"></div>
-            <div className="w-5 h-0.5 bg-black"></div>
-          </button>
-
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+        >
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="lg:hidden border-t bg-white px-4 py-3 flex flex-col gap-2">
-
+        <div className="lg:hidden border-t bg-white px-4 py-4 flex flex-col gap-2">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600"
+              className={`px-4 py-3 rounded-lg ${
+                pathname === link.href
+                  ? "bg-red-600 text-white"
+                  : "hover:bg-red-50"
+              }`}
             >
               {link.label}
             </Link>
@@ -147,25 +210,46 @@ export default function Navbar() {
 
           {user ? (
             <>
-            {user.email === "admin@gmail.com" && (
-  <Link
-    href="/admin"
-    onClick={() => setMenuOpen(false)}
-    className="px-3 py-2 rounded-lg hover:bg-red-50"
-  > Admin
-  </Link>
-)}
               <Link
-                href="/profile"
+                href="/my-requests"
                 onClick={() => setMenuOpen(false)}
-                className="px-3 py-2 rounded-lg hover:bg-red-50"
+                className="px-4 py-3 rounded-lg hover:bg-red-50"
               >
-                👤 Profile
+                My Requests
               </Link>
+
+              <Link
+                href="/dashboard"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg bg-red-50"
+              >
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-700 text-white flex items-center justify-center font-bold">
+                  {avatarLetter}
+                </div>
+
+                <div>
+                  <p className="font-semibold text-gray-800">
+                    {fullName || "User"}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Dashboard
+                  </p>
+                </div>
+              </Link>
+
+              {user?.email === "admin@gmail.com" && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="px-4 py-3 rounded-lg hover:bg-red-50"
+                >
+                  Admin
+                </Link>
+              )}
 
               <button
                 onClick={handleLogout}
-                className="text-left px-3 py-2 rounded-lg text-red-600 hover:bg-red-50"
+                className="text-left px-4 py-3 text-red-600 font-medium"
               >
                 Logout
               </button>
@@ -175,7 +259,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setMenuOpen(false)}
-                className="px-3 py-2 rounded-lg hover:bg-red-50"
+                className="px-4 py-3 rounded-lg hover:bg-red-50"
               >
                 Login
               </Link>
@@ -183,7 +267,7 @@ export default function Navbar() {
               <Link
                 href="/signup"
                 onClick={() => setMenuOpen(false)}
-                className="px-3 py-2 rounded-lg hover:bg-red-50"
+                className="px-4 py-3 rounded-lg bg-red-600 text-white"
               >
                 Sign Up
               </Link>
