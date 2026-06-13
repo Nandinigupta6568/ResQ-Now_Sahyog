@@ -1,4 +1,4 @@
-#  ResQNow — Real-Time Emergency Resource Coordination Platform
+###  ResQNow — Real-Time Emergency Resource Coordination Platform
 
 > Connecting people in crisis with blood donors, medicine, food, transport, shelter, and volunteers — instantly.
 
@@ -74,7 +74,7 @@ ResQNow provides a **zero-friction** request system — no account needed to ask
 - Stay in full control — you choose who helps you
 
 ### For Admins
-- Protected admin panel (server-side authentication via Next.js proxy middleware)
+- Protected admin panel 
 - View all requests, volunteers, and platform activity
 - Manage and moderate the platform
 
@@ -88,7 +88,7 @@ ResQNow provides a **zero-friction** request system — no account needed to ask
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -103,7 +103,7 @@ ResQNow provides a **zero-friction** request system — no account needed to ask
 | Geocoding | OpenStreetMap Nominatim API (free, no API key needed) |
 | Forms | React Hook Form + Zod validation |
 | Animations | Framer Motion |
-| Deployment | Vercel (recommended) |
+
 
 ---
 
@@ -168,7 +168,6 @@ final_ResQ-Now/
 │   └── getUser.js                # Auth helper
 │
 ├── public/                       # Static assets
-├── proxy.ts                      # Server-side admin route protection
 ├── .env.local                    # Environment variables (never commit)
 ├── next.config.ts
 ├── tailwind.config
@@ -222,7 +221,7 @@ Stores additional user info linked to Supabase Auth users.
 
 ### Normal Request Flow
 ```
-1. Person submits request (no login needed)
+1. Person submits request 
       ↓
 2. Request saved to Supabase with status = "open"
       ↓
@@ -297,13 +296,9 @@ Triggered automatically when any form is submitted with SOS checked.
 ##  Security
 
 ### Admin Protection
-The `/admin` route is protected by `proxy.ts` (Next.js middleware). It runs **on the server** before the page loads:
-- Reads the Supabase session from cookies
 - If not logged in → redirects to `/login`
 - If logged in but not admin email → redirects to `/`
 - Only the admin email gets access to the admin panel
-
-This replaces the old client-side check (`if user.email !== "admin@gmail.com"`) which could be bypassed via browser DevTools.
 
 ### Rate Limiting
 Every request form checks: has this phone number submitted the same category in the last 10 minutes? If yes, the request is rejected with a clear message. This prevents spam and abuse of the system.
@@ -340,6 +335,10 @@ npm install lucide-react
 
 # Install email dependency
 npm install nodemailer
+
+# Create environment file
+cp .env.example .env.local
+# Fill in your values (see Environment Variables section)
 
 # Run development server
 npm run dev
@@ -444,6 +443,12 @@ The `/requests` page uses Supabase Realtime so new requests appear instantly wit
 ##  Team
 
 Built for hackathon — ResQNow aims to make emergency response faster, smarter, and more human.
+
+---
+
+##  License
+
+This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
