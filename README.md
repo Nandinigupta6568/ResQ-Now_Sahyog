@@ -215,11 +215,42 @@ ResQ-Now/
 
 # Recent Updates
 
-* Added secure Admin Login functionality
+* Added secure Admin Dashboard
 * Improved authentication system
 * Enhanced homepage footer with quick navigation links
 * Improved user experience and accessibility
 * Added quick navigation links in footer
 * Updated README documentation
+
+---
+
+### Admin Dashboard
+
+The platform includes a dedicated Admin Portal for managing the entire emergency assistance system. Only authorized administrators can access this dashboard.
+
+# Features
+
+
+1. Manage Users
+   View all registered users.
+   Monitor user activities.
+   Remove inappropriate or inactive user records if necessary.
+2. Manage Resource Offers
+   View all blood, food, medicine, transport, and shelter offers.
+   Remove invalid or outdated offers.
+3. Blood Donor Management
+   Monitor registered blood donors.
+   Access donor details and location information.
+4. Review & Feedback Management
+   View customer feedback and ratings.
+   Analyze user suggestions to improve the platform.
+5. Dashboard Analytics
+   Total Emergency Requests
+   Total Resource Offers
+   Total SOS Requests
+   Overall platform activity overview
+6. Secure Admin Access
+   Admin authentication using Supabase Auth.
+   Only authorized admin accounts can access the dashboard.
 
 ---

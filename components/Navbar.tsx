@@ -36,11 +36,12 @@ export default function Navbar() {
     { href: "/map", label: " Emergency Map" },
     { href: "/directory", label: " Contacts" },
     { href: "/dashboard", label: " Dashboard" },
+     { href: "/my-requests", label: " My Requests" },
   ];
 
   return (
     <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-5 py-3 flex justify-between items-center">
+      <div className="max-w-[1600px] mx-auto px-4 py-3 flex justify-between items-center">
 
         {/* Logo */}
         <Link
@@ -51,12 +52,12 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center gap-1">
+        <div className="hidden xl:flex items-center gap-2">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg transition"
+              className="text-sm whitespace-nowrap text-gray-700 hover:text-red-600 hover:bg-red-50 px-2.5 py-2 rounded-lg transition"
             >
               {link.label}
             </Link>
@@ -74,7 +75,7 @@ export default function Navbar() {
     href="/admin"
     className="text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg transition"
   >
-    Admin
+    Admin Dashboard
   </Link>
 )}
 
@@ -151,8 +152,7 @@ export default function Navbar() {
     href="/admin"
     onClick={() => setMenuOpen(false)}
     className="px-3 py-2 rounded-lg hover:bg-red-50"
-  >
-    Admin
+  > Admin
   </Link>
 )}
               <Link
