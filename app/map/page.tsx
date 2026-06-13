@@ -6,106 +6,76 @@ import { supabase } from "@/lib/supabase";
 
 const EmergencyMap = dynamic(
   () => import("@/components/EmergencyMap"),
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
 
 type RequestItem = {
   id: string;
   category: string;
   description: string;
-  city?: string;
-  state?: string;
-  location?: string;
   latitude?: number;
   longitude?: number;
   urgency?: string;
   status?: string;
   is_sos?: boolean;
+  address?: string;
+};
+
+type OfferItem = {
+  id: string;
+  category: string;
+  description: string;
+  latitude?: number;
+  longitude?: number;
+  address?: string;
 };
 
 export default function MapPage() {
   const [requests, setRequests] = useState<RequestItem[]>([]);
+  const [offers, setOffers] = useState<OfferItem[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [search, setSearch] = useState("");
-  const [cityFilter, setCityFilter] = useState("all");
-  const [stateFilter, setStateFilter] = useState("all");
-  const [selectedCity, setSelectedCity] = useState("all");
+
+  // Fetch requests and offers from Supabase
+  const fetchRequests = async () => {
+    try {
+      const { data: reqData, error: reqError } = await supabase
+        .from("requests")
+        .select("*");
+
+      if (reqError) {
+        console.error("Requests Error:", reqError);
+      }
+
+      const { data: offerData, error: offerError } = await supabase
+        .from("offers")
+        .select("*");
+
+      if (offerError) {
+        console.error("Offers Error:", offerError);
+      }
+
+      setRequests(reqData || []);
+      setOffers(offerData || []);
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchRequests();
-
-    const channel = supabase
-      .channel("map-live")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "requests",
-        },
-        () => {
-          fetchRequests();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
 
-  const fetchRequests = async () => {
-    const { data } = await supabase
-      .from("requests")
-      .select("*");
-
-    setRequests(data || []);
-    setLoading(false);
-  };
-
-  const cities = [
-    ...new Set(
-      requests
-        .map((r) => r.city)
-        .filter(Boolean)
-    ),
-  ];
-
-  const states = [
-    ...new Set(
-      requests
-        .map((r) => r.state)
-        .filter(Boolean)
-    ),
-  ];
-
+  // Search filter (only requests for sidebar and map)
   const filteredRequests = requests.filter((req) => {
-    const cityMatch =
-      cityFilter === "all" ||
-      req.city === cityFilter;
-
-    const stateMatch =
-      stateFilter === "all" ||
-      req.state === stateFilter;
-
-    const searchMatch =
-      req.category
-        ?.toLowerCase()
-        .includes(search.toLowerCase()) ||
-      req.city
-        ?.toLowerCase()
-        .includes(search.toLowerCase()) ||
-      req.description
-        ?.toLowerCase()
-        .includes(search.toLowerCase());
+    const searchText = search.toLowerCase();
 
     return (
-      cityMatch &&
-      stateMatch &&
-      searchMatch
+      req.category?.toLowerCase().includes(searchText) ||
+      req.description?.toLowerCase().includes(searchText) ||
+      req.address?.toLowerCase().includes(searchText)
     );
   });
 
@@ -119,32 +89,28 @@ export default function MapPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold">
-           Emergency Resource Map
+          Emergency Resource Map
         </h1>
 
         <p className="text-gray-600 mt-2">
-          View live emergency requests across cities.
+          View live emergency requests across locations.
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid md:grid-cols-4 gap-4 mb-8">
-
-        <div className="bg-white rounded-xl shadow p-5">
-          <h3 className="text-gray-500">
-            Total Requests
-          </h3>
+      {/* Top Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-xl shadow p-4">
+          <h3 className="text-gray-500">Total Requests</h3>
 
           <p className="text-3xl font-bold">
             {requests.length}
           </p>
         </div>
 
-        <div className="bg-red-50 rounded-xl shadow p-5">
+        <div className="bg-red-50 rounded-xl shadow p-4">
           <h3 className="text-red-600">
             SOS Requests
           </h3>
@@ -158,130 +124,67 @@ export default function MapPage() {
           </p>
         </div>
 
-        <div className="bg-green-50 rounded-xl shadow p-5">
-          <h3 className="text-green-600">
-            Open Requests
+        <div className="bg-green-50 rounded-xl shadow p-4">
+          <h3 className="text-green-600">Offers</h3>
+
+          <p className="text-3xl font-bold">
+            {offers.length}
+          </p>
+        </div>
+
+        <div className="bg-blue-50 rounded-xl shadow p-4">
+          <h3 className="text-blue-600">
+            Active Requests
           </h3>
 
           <p className="text-3xl font-bold">
             {
               requests.filter(
-                (r) =>
-                  r.status === "open"
+                (r) => r.status === "open"
               ).length
             }
           </p>
         </div>
-
-        <div className="bg-blue-50 rounded-xl shadow p-5">
-          <h3 className="text-blue-600">
-            Cities Covered
-          </h3>
-
-          <p className="text-3xl font-bold">
-            {cities.length}
-          </p>
-        </div>
-
       </div>
 
-      {/* Filters */}
+      {/* Search */}
       <div className="bg-white p-5 rounded-xl shadow mb-8">
-
-        <div className="grid md:grid-cols-3 gap-4">
-
-          <input
-            type="text"
-            placeholder="Search requests..."
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className="border rounded-xl p-3"
-          />
-
-          <select
-            value={cityFilter}
-            onChange={(e) =>
-              setCityFilter(e.target.value)
-            }
-            className="border rounded-xl p-3"
-          >
-            <option value="all">
-              All Cities
-            </option>
-
-            {cities.map((city) => (
-              <option
-                key={city}
-                value={city}
-              >
-                {city}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={stateFilter}
-            onChange={(e) =>
-              setStateFilter(e.target.value)
-            }
-            className="border rounded-xl p-3"
-          >
-            <option value="all">
-              All States
-            </option>
-
-            {states.map((state) => (
-              <option
-                key={state}
-                value={state}
-              >
-                {state}
-              </option>
-            ))}
-          </select>
-
-        </div>
-
+        <input
+          type="text"
+          placeholder="Search requests..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border rounded-xl p-3 w-full"
+        />
       </div>
 
-<div className="flex gap-6 mb-4 bg-white p-4 rounded-xl shadow">
+      {/* Legend */}
+      <div className="flex items-center gap-6 mb-8 px-1">
+        <div className="flex items-center gap-2">
+          <span className="inline-block w-4 h-4 rounded-full bg-red-500"></span>
+          <span className="text-sm text-gray-600">Request</span>
+        </div>
 
-  <div className="flex items-center gap-2">
-    <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-    <span>SOS Emergency</span>
-  </div>
+        <div className="flex items-center gap-2">
+          <span className="inline-block w-4 h-4 rounded-full bg-green-500"></span>
+          <span className="text-sm text-gray-600">Offer</span>
+        </div>
+      </div>
 
-  <div className="flex items-center gap-2">
-    <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
-    <span>Open Request</span>
-  </div>
-
-  <div className="flex items-center gap-2">
-    <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-    <span>Assigned</span>
-  </div>
-
-</div>
-
-
-
-      {/* Map + Sidebar */}
+      {/* Map and Sidebar */}
       <div className="grid lg:grid-cols-3 gap-6">
-
+        {/* MAP */}
         <div className="lg:col-span-2">
-
           <EmergencyMap
             requests={filteredRequests}
+            offers={offers}
           />
-
         </div>
 
+        {/* SIDEBAR */}
         <div className="bg-white rounded-xl shadow p-5 max-h-[600px] overflow-y-auto">
-
           <h2 className="font-bold text-xl mb-4">
-             Live Requests
+            Live Requests
           </h2>
 
           {filteredRequests.length === 0 ? (
@@ -293,8 +196,7 @@ export default function MapPage() {
                 className="border-b py-4"
               >
                 <div className="flex justify-between">
-
-                  <strong>
+                  <strong className="capitalize">
                     {req.category}
                   </strong>
 
@@ -303,28 +205,35 @@ export default function MapPage() {
                       SOS
                     </span>
                   )}
-
                 </div>
 
                 <p className="text-sm text-gray-500">
-                  {req.city}, {req.state}
+                  {req.address ||
+                    "Address not available"}
                 </p>
 
                 <p className="text-sm mt-2">
                   {req.description}
                 </p>
 
-                <span className="inline-block mt-2 px-2 py-1 rounded bg-gray-100 text-xs">
-                  {req.status}
-                </span>
+                <div className="flex gap-2 mt-2 flex-wrap">
+                  {req.status && (
+                    <span className="inline-block px-2 py-1 rounded bg-gray-100 text-xs capitalize">
+                      {req.status}
+                    </span>
+                  )}
+
+                  {req.urgency && (
+                    <span className="inline-block px-2 py-1 rounded bg-yellow-100 text-xs capitalize">
+                      {req.urgency}
+                    </span>
+                  )}
+                </div>
               </div>
             ))
           )}
-
         </div>
-
       </div>
-
     </div>
   );
 }

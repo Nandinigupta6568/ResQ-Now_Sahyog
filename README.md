@@ -120,12 +120,14 @@ The platform provides a dedicated login system for authorized administrators.
 
 # Tech Stack
 
-| Layer    | Technology             |
-| -------- | ---------------------- |
+| Layer | Technology |
+|---------|------------|
 | Frontend | Next.js 16, TypeScript |
-| Backend  | Supabase               |
-| Styling  | Tailwind CSS           |
-| Database | PostgreSQL             |
+| Backend | Supabase |
+| Database | PostgreSQL |
+| Styling | Tailwind CSS |
+| Authentication | Supabase Auth |
+| Maps & Geolocation | Browser Geolocation API + Leaflet,OpenStreetMap |
 
 ---
 
@@ -202,6 +204,18 @@ ResQ-Now/
 
 ---
 
+# Review & Feedback
+
+After receiving or providing assistance, users can share feedback through the review system.
+
+Reviews help:
+
+- Improve platform quality
+- Increase transparency
+- Build community trust
+- Identify areas for future improvements
+
+---
 
 ### Admin Dashboard
 
@@ -238,11 +252,12 @@ The platform includes a dedicated Admin Portal for managing the entire emergency
 # Recent Updates
 
 * Added secure Admin Dashboard
-* Integrated GPS-based location capture in emergency request forms
-* Integrated GPS-based location capture in offer help forms
+* Integrated GPS-based location capture in emergency offer forms
+* Added interactive map with *🟢 Green markers for Offers* and *🔴 Red markers for Requests*
+* Implemented search and sorting to quickly find specific emergency requests
 * Improved authentication system
+* Enhanced homepage footer with quick navigation links
 * Improved user experience and accessibility
-* Added quick navigation links in footer
 * Updated README documentation
 
 ---
