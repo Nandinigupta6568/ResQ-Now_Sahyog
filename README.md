@@ -266,5 +266,10 @@ The platform includes a dedicated Admin Portal for managing the entire emergency
 ## For modified UI 
 # Install Dependencies
 
-1. npm install --save-dev @types/react @types/react-dom or npm react-dom
+```bash
+npm install --save-dev @types/react @types/react-dom or npm react-dom
+```
+
+```bash
 2. npm install lucide-react
+```
