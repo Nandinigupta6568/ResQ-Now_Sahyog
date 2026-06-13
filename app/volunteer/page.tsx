@@ -1,4 +1,11 @@
 "use client";
+ import Link from "next/link";
+import {
+  Loader2,
+  ShieldCheck,
+  ClipboardList,
+  CheckCircle,
+} from "lucide-react";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -7,7 +14,7 @@ export default function VolunteerPage() {
   const [user, setUser] = useState<any>(null);
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
+ 
   useEffect(() => {
     loadVolunteerDashboard();
   }, []);
@@ -25,10 +32,11 @@ export default function VolunteerPage() {
     }
 
     const { data, error } = await supabase
-      .from("requests")
-      .select("*")
-      .eq("assigned_to", user.email)
-      .order("created_at", { ascending: false });
+  .from("requests")
+  .select("*")
+  .eq("assigned_to", user.email)
+  .eq("user_confirmation", "approved")
+  .order("created_at", { ascending: false });
 
     if (!error) {
       setRequests(data || []);
@@ -37,30 +45,76 @@ export default function VolunteerPage() {
     setLoading(false);
   }
 
-  async function markCompleted(id: string) {
-    const { error } = await supabase
-      .from("requests")
-      .update({
-        status: "completed",
-      })
-      .eq("id", id);
+  async function startHelp(id: string) {
+  const { error } = await supabase
+    .from("requests")
+    .update({
+      status: "in_progress",
+      started_at: new Date().toISOString(),
+    })
+    .eq("id", id);
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    loadVolunteerDashboard();
+  if (error) {
+    alert(error.message);
+    return;
   }
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto p-6">
-        Loading...
+  loadVolunteerDashboard();
+}
+
+async function resolveRequest(id: string) {
+  const { error } = await supabase
+    .from("requests")
+    .update({
+      status: "resolved",
+      resolved_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Request marked completed.");
+  loadVolunteerDashboard();
+}
+
+  if (!user) {
+  return (
+    <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-b from-red-50 via-white to-gray-50 px-6">
+      <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl border p-10 text-center">
+        <div className="w-24 h-24 mx-auto rounded-full bg-red-100 flex items-center justify-center mb-6">
+          <ShieldCheck className="w-12 h-12 text-red-600" />
+        </div>
+
+        <h1 className="text-3xl font-bold mb-4">
+          Volunteer Login Required
+        </h1>
+
+        <p className="text-gray-600 mb-8">
+          Please login to access your volunteer dashboard and manage assigned requests.
+        </p>
+
+        <div className="flex gap-4 justify-center">
+          <Link
+            href="/login"
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold"
+          >
+            Login
+          </Link>
+
+          <Link
+            href="/signup"
+            className="bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-xl font-semibold"
+          >
+            Sign Up
+          </Link>
+        </div>
       </div>
-    );
-  }
-
+    </div>
+  );
+}
   if (!user) {
     return (
       <div className="max-w-7xl mx-auto p-6">
@@ -69,13 +123,17 @@ export default function VolunteerPage() {
     );
   }
 
-  const completedCount = requests.filter(
-    (r) => r.status === "completed"
-  ).length;
+  const resolvedCount = requests.filter(
+  (r) => r.status === "resolved"
+).length;
 
-  const activeCount = requests.filter(
-    (r) => r.status === "in_progress"
-  ).length;
+const activeCount = requests.filter(
+  (r) =>
+    r.status === "accepted" ||
+    r.status === "in_progress" ||
+    r.status === "resolved"
+).length;
+
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
@@ -106,11 +164,11 @@ export default function VolunteerPage() {
 
         <div className="bg-white p-6 rounded-2xl shadow">
           <h2 className="text-3xl font-bold text-green-600">
-            {completedCount}
+            {resolvedCount}
           </h2>
 
           <p className="text-gray-600 mt-2">
-            Completed Requests
+            Resolved Requests
           </p>
         </div>
 
@@ -144,10 +202,14 @@ export default function VolunteerPage() {
 
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${
-                      req.status === "completed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
+  req.status === "accepted"
+    ? "bg-blue-100 text-blue-700"
+    : req.status === "in_progress"
+    ? "bg-yellow-100 text-yellow-700"
+    : req.status === "resolved"
+    ? "bg-green-100 text-green-700"
+    : "bg-red-100 text-red-700"
+}`}
                   >
                     {req.status}
                   </span>
@@ -170,18 +232,89 @@ export default function VolunteerPage() {
                   <strong>Urgency:</strong> {req.urgency}
                 </p>
 
-                <p className="mt-3">
-                  {req.description}
-                </p>
+               <div className="mt-3">
+  <span
+    className={`px-3 py-1 rounded-full text-xs ${
+      req.user_confirmation === "approved"
+        ? "bg-green-100 text-green-700"
+        : req.user_confirmation === "rejected"
+        ? "bg-red-100 text-red-700"
+        : "bg-yellow-100 text-yellow-700"
+    }`}
+  >
+    User Confirmation: {req.user_confirmation || "pending"}
+  </span>
+</div>
 
-                {req.status !== "completed" && (
-                  <button
-                    onClick={() => markCompleted(req.id)}
-                    className="mt-4 bg-green-600 text-white px-5 py-2 rounded-xl"
-                  >
-                     Mark Completed
-                  </button>
-                )}
+                <div className="mt-4 border-t pt-3 text-sm text-gray-500">
+
+  <p>
+    Created:
+    {" "}
+    {new Date(req.created_at).toLocaleString()}
+  </p>
+
+  {req.accepted_at && (
+    <p>
+      Accepted:
+      {" "}
+      {new Date(req.accepted_at).toLocaleString()}
+    </p>
+  )}
+
+  {req.started_at && (
+    <p>
+      Started:
+      {" "}
+      {new Date(req.started_at).toLocaleString()}
+    </p>
+  )}
+
+  {req.resolved_at && (
+    <p>
+      Resolved:
+      {" "}
+      {new Date(req.resolved_at).toLocaleString()}
+    </p>
+  )}
+
+</div>
+
+               <div className="mt-5 flex gap-3 flex-wrap">
+
+{req.status === "accepted" &&
+ req.user_confirmation === "pending" && (
+  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+    Waiting for requester approval...
+  </div>
+)}
+
+{req.status === "accepted" &&
+ req.user_confirmation === "approved" && (
+  <button
+    onClick={() => startHelp(req.id)}
+    className="bg-yellow-500 text-white px-5 py-2 rounded-xl"
+  >
+    Start Help
+  </button>
+)}
+
+  {req.status === "in_progress" && (
+  <button
+    onClick={() => resolveRequest(req.id)}
+    className="bg-green-600 text-white px-5 py-2 rounded-xl"
+  >
+    Mark Completed
+  </button>
+)}
+
+{req.user_confirmation === "approved" && (
+  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+    User Approved
+  </span>
+)}
+
+</div>
 
               </div>
             ))}

@@ -1,5 +1,3 @@
-<div align="center">
-
 ### ResQ-Now — Emergency Resource Connect
 
 **A real-time, community-powered emergency resource sharing platform**
@@ -24,23 +22,25 @@ The platform also includes secure administrator authentication to support future
 
 ---
 
+
 ## Features
 
-| Feature | Description |
-|---|---|
-|  **Emergency Requests**  | Real-time posting and tracking of emergency requests  |
-|  **Location-Based Tracking**  | Map-integrated resource and volunteer tracking  |
-|  **Volunteer & NGO Coordination**  | Structured system for volunteers and organizations to coordinate  |
-|  Resource & Blood Requests  | Dedicated blood donation and resource request system  |
-|  User Registration & Authentication  | Secure signup and login system for users  |
-|  Admin Authentication  | Secure login system for authorized administrators  |
-|  Ask for Help  | Submit emergency requests for blood, food, medicine, shelter, transportation, and volunteer support  |
-|  Donate Resources  | Provide blood donations, food, medicines, shelter, transportation, or volunteer assistance  |
-|  Community Reviews  | Users can share feedback, experiences, and reviews to build trust and improve services  |
-|  Real-Time Updates  | Live database synchronization using Supabase Realtime  |
-|  Responsive UI  | Fast, mobile-friendly interface built with Next.js App Router  |
-|  Community Collaboration  | Encourages local communities to support one another  |
-|  Informative Footer  | Quick access to navigation, resources, contact information, and project information  |
+| Feature                                | Description                                                                   |
+| -------------------------------------- | ----------------------------------------------------------------------------- |
+| **Emergency Requests**                 | Real-time posting and tracking of emergency requests                          |
+| **GPS Location Capture**               | Capture live location while submitting emergency offers                       |
+| **Interactive Emergency Map**          | 🟢 Green markers for offers and 🔴 Red markers for requests                   |
+| **Smart Search & Sorting**             | Search and filter emergency requests for faster access                        |
+| **Volunteer & NGO Coordination**       | Structured system for volunteers and organizations                            |
+| **Resource & Blood Requests**          | Dedicated blood donation and emergency resource system                        |
+| **User Registration & Authentication** | Secure signup and login system                                                |
+| **Admin Authentication**               | Secure login system for authorized administrators                             |
+| **Ask for Help**                       | Submit requests for blood, food, medicine, shelter, transport, and volunteers |
+| **Donate Resources**                   | Offer blood, food, medicine, shelter, transport, and volunteer assistance     |
+| **Community Reviews**                  | Share feedback and experiences                                                |
+| **Real-Time Updates**                  | Live synchronization using Supabase Realtime                                  |
+| **Modern Responsive UI**               | Improved Navigation Bar, Login, Signup, Request and Offer Forms               |
+| **Informative Footer**                 | Quick navigation and project information                                      |
 
 ---
 
@@ -246,20 +246,6 @@ The platform includes a dedicated Admin Portal for managing the entire emergency
    Admin authentication using Supabase Auth.
    Only authorized admin accounts can access the dashboard.
 
----
-
-
-# Recent Updates
-
-
-* Integrated GPS-based location capture in emergency offer forms
-* Added interactive emergency map with 🟢 green markers for offers and 🔴 red markers for requests
-* Implemented search and sorting for quick access to emergency requests
-* Redesigned the Navigation Bar for a cleaner and more user-friendly experience
-* Enhanced the Login and Sign Up pages with an improved modern UI
-* Improved authentication and access control
-* Improved overall user experience and accessibility
-* Updated README documentation
 
 ---
 
@@ -273,3 +259,13 @@ npm install --save-dev @types/react @types/react-dom or npm react-dom
 ```bash
 2. npm install lucide-react
 ```
+
+# Recent Updates
+
+* Added volunteer coordination module
+* Redesigned the Navigation Bar for a cleaner and more user-friendly experience
+* Enhanced the Login and Sign Up pages with a modern UI
+* Revamped the Request and Offer forms with an improved, responsive, and user-friendly interface
+* Improved authentication and access control
+* Improved overall user experience and accessibility
+* Updated README documentation

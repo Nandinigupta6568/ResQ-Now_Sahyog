@@ -8,9 +8,7 @@ type Offer = {
   name: string;
   phone: string;
   category: string;
-  city: string;
-  state: string;
-  location: string;
+  address: string;
   description: string;
   availability: string;
   created_at: string;
@@ -31,7 +29,7 @@ export default function OffersPage() {
         {
           event: "*",
           schema: "public",
-          table: "resource_offers",
+          table: "offers",
         },
         () => {
           fetchOffers();
@@ -156,12 +154,9 @@ export default function OffersPage() {
                 </p>
 
                 <p>
-                  <strong></strong> {offer.city}, {offer.state}
+                  <strong></strong> {offer.address}
                 </p>
 
-                <p className="text-sm text-gray-500">
-                  {offer.location}
-                </p>
 
                 <div className="mt-4">
                   <p>{offer.description}</p>
