@@ -1,14 +1,12 @@
-export async function getCoordinates(
-  city: string,
-  state: string
-) {
+// function to convert lat/lng into structured address
+
+export async function getAddressFromCoordinates(
+  latitude: number,
+  longitude: number
+): Promise<{ address: string; city: string; state: string }> {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
-        city
-      )}&state=${encodeURIComponent(
-        state
-      )}&format=json&limit=1`,
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
       {
         headers: {
           "User-Agent": "Emergency-Resource-Platform",
@@ -18,16 +16,30 @@ export async function getCoordinates(
 
     const data = await response.json();
 
-    if (data.length === 0) {
-      return null;
+    if (!data || !data.address) {
+      return { address: "", city: "", state: "" };
     }
 
-    return {
-      latitude: parseFloat(data[0].lat),
-      longitude: parseFloat(data[0].lon),
-    };
+    const a = data.address;
+
+    // city: try multiple fields Nominatim may use
+    const city =
+      a.city ||
+      a.town ||
+      a.village ||
+      a.suburb ||
+      a.county ||
+      "";
+
+    // state
+    const state = a.state || "";
+
+    // full human-readable address
+    const address = data.display_name || "";
+
+    return { address, city, state };
   } catch (error) {
-    console.error("Geocoding error:", error);
-    return null;
+    console.error("Reverse geocoding error:", error);
+    return { address: "", city: "", state: "" };
   }
 }
