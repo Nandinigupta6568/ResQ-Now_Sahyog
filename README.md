@@ -25,12 +25,12 @@ Connecting citizens, volunteers, NGOs, hospitals, and donors during emergencies 
 | Feature | Description |
 |---|---|
 |  **Emergency Requests** | Real-time posting and tracking of emergency requests |
-|  **Location-Based Tracking** |	Map-integrated resource and volunteer tracking  |
+|  **Location-Based Tracking** | Map-integrated resource and volunteer tracking |
 |  **Volunteer & NGO Coordination** | Structured system for volunteers and organizations to coordinate |
 |  **Resource & Blood Requests** | Dedicated blood donation and resource request system |
-|  **Authentication** | Secure user authentication powered by Supabase Auth |
+|  **Community Reviews** | Users can share feedback, experiences, and reviews to build trust and improve services |
+|  **Quick Access Footer** | Easy navigation through footer links including resources, contact information, and important pages |
 |  **Real-Time Updates** | Live database synchronization using Supabase Realtime |
-|  **Emergency Contacts** | Emergency contacts of Hospital, NGOs, Medical Stores |
 |  **Responsive UI** | Fast, mobile-friendly interface built with Next.js App Router |
 
 ---
@@ -125,3 +125,24 @@ ResQ-Now/
 6.  Multi-language support
 
 ---
+
+
+##  Recent Updates
+
+-  Added a community review and feedback section.
+-  Improved user experience and site accessibility.
+
+---
+
+### Changes Made
+- Added community review and feedback section.
+- Updated README documentation.
+
+## Review & Feedback
+
+Users can provide feedback through the Review Section.
+
+**Steps:**
+1. Open [http://localhost:3000/review](http://localhost:3000/review) in your browser.
+2. Fill out the review form with your feedback and ratings.
+3. Submit the form to record your review.
