@@ -30,6 +30,7 @@ Connecting citizens, volunteers, NGOs, hospitals, and donors during emergencies 
 |  **Resource & Blood Requests** | Dedicated blood donation and resource request system |
 |  **Authentication** | Secure user authentication powered by Supabase Auth |
 |  **Real-Time Updates** | Live database synchronization using Supabase Realtime |
+|  **Emergency Contacts** | Emergency contacts of Hospital, NGOs, Medical Stores |
 |  **Responsive UI** | Fast, mobile-friendly interface built with Next.js App Router |
 
 ---

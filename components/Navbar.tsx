@@ -32,6 +32,7 @@ export default function Navbar() {
     { href: "/volunteer", label: " Join Volunteers" },
     { href: "/requests", label: " Live Requests" },
     { href: "/map", label: " Emergency Map" },
+    { href: "/directory", label: " Contacts" },
     { href: "/dashboard", label: " Dashboard" },
   ];
 
