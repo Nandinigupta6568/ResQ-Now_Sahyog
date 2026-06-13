@@ -168,7 +168,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 npm run dev
 ```
 
-Open `http://localhost:3000` in your browser to view the application.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
 ---
 
@@ -202,27 +202,6 @@ ResQ-Now/
 
 ---
 
-# Future Improvements
-
-*  AI-based emergency matching system
-*  SMS / WhatsApp alert notifications
-*  Admin dashboard for monitoring requests
-*  Mobile app version (React Native)
-*  Verified volunteer badge system
-*  Multi-language support
-
----
-
-# Recent Updates
-
-* Added secure Admin Dashboard
-* Improved authentication system
-* Enhanced homepage footer with quick navigation links
-* Improved user experience and accessibility
-* Added quick navigation links in footer
-* Updated README documentation
-
----
 
 ### Admin Dashboard
 
@@ -254,3 +233,17 @@ The platform includes a dedicated Admin Portal for managing the entire emergency
    Only authorized admin accounts can access the dashboard.
 
 ---
+
+
+# Recent Updates
+
+* Added secure Admin Dashboard
+* Integrated GPS-based location capture in emergency request forms
+* Integrated GPS-based location capture in offer help forms
+* Improved authentication system
+* Improved user experience and accessibility
+* Added quick navigation links in footer
+* Updated README documentation
+
+---
+
