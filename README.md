@@ -29,7 +29,7 @@ The platform also includes secure administrator authentication to support future
 | -------------------------------------- | ----------------------------------------------------------------------------- |
 | **Emergency Requests**                 | Real-time posting and tracking of emergency requests                          |
 | **GPS Location Capture**               | Capture live location while submitting emergency offers                       |
-| **Interactive Emergency Map**          | 🟢 Green markers for offers and 🔴 Red markers for requests                   |
+| **Interactive Emergency Map**          | 🟢 Green markers for offers and 🔴 Red markers for requests                  |
 | **Smart Search & Sorting**             | Search and filter emergency requests for faster access                        |
 | **Volunteer & NGO Coordination**       | Structured system for volunteers and organizations                            |
 | **Resource & Blood Requests**          | Dedicated blood donation and emergency resource system                        |
@@ -41,6 +41,10 @@ The platform also includes secure administrator authentication to support future
 | **Real-Time Updates**                  | Live synchronization using Supabase Realtime                                  |
 | **Modern Responsive UI**               | Improved Navigation Bar, Login, Signup, Request and Offer Forms               |
 | **Informative Footer**                 | Quick navigation and project information                                      |
+| **Email Notification Service**         | Automatic email notifications for important emergency events                  |
+| **SOS Alert System**                   | Instantly triggers SOS alerts for critical emergency situations               |
+| **Volunteer Email Alerts**             | Sends emergency emails directly to registered volunteers for faster response  |
+| **Fast Emergency Coordination**        | Reduces response time through automated notifications and real-time updates   |
 
 ---
 
@@ -262,10 +266,25 @@ npm install --save-dev @types/react @types/react-dom or npm react-dom
 
 # Recent Updates
 
+* Added secure Admin Dashboard with centralized management
+* Integrated GPS-based location capture in emergency offer forms
+* Added interactive emergency map with 🟢 green markers for offers and 🔴 red markers for requests
+* Implemented search and sorting for quick access to emergency requests
 * Added volunteer coordination module
+* Introduced Email Notification Service for emergency communication
+* Added SOS Trigger System for critical emergency situations
+* Enabled direct emergency email alerts to volunteers for faster assistance
 * Redesigned the Navigation Bar for a cleaner and more user-friendly experience
 * Enhanced the Login and Sign Up pages with a modern UI
 * Revamped the Request and Offer forms with an improved, responsive, and user-friendly interface
 * Improved authentication and access control
+* Enhanced homepage footer with quick navigation links
 * Improved overall user experience and accessibility
 * Updated README documentation
+
+## For enmail notification services 
+# Install Dependencies
+
+```bash
+npm install nodemailer
+```
